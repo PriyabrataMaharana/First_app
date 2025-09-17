@@ -23,17 +23,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf().disable()
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/users/add").permitAll() // public
-                .anyRequest().authenticated() // everything else requires authentication
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .authorizeHttpRequests()
+            .requestMatchers("/api/auth/**", "/api/users/add").permitAll()   // allow login/register
+//            .requestMatchers("/api/users").authenticated() // only ADMIN can list all users
+            .requestMatchers("/api/users/**").authenticated() // allow authenticated users for /users/*
+            .anyRequest().authenticated()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 }

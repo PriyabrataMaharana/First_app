@@ -2,6 +2,8 @@ package com.example.security;
 
 import java.util.Date;
 import javax.crypto.SecretKey;
+
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -22,6 +24,15 @@ public class JwtUtils {
                 .signWith(secretKey)
                 .compact();
     }
+    
+//    public String generateToken(UserDetails userDetails) {
+//        return Jwts.builder()
+//                .setSubject(userDetails.getUsername())   // only username, not whole object
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+//                .signWith(secretKey)
+//                .compact();
+//    }
 
     public String getUsernameFromJwt(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build()
